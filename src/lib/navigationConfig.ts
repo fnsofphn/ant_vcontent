@@ -54,6 +54,7 @@ export const APP_PAGE_LABELS: Record<PageKey, string> = {
   users: 'Người dùng',
   audit: 'Nhật ký kiểm tra',
   'archived-products': 'Sản phẩm lưu trữ',
+  'product-library': 'Thư viện sản phẩm',
 };
 
 export const APP_NAV_SECTIONS: NavSection[] = [
@@ -130,6 +131,7 @@ export const APP_NAV_SECTIONS: NavSection[] = [
       { key: 'qc-criteria', label: APP_PAGE_LABELS['qc-criteria'], icon: 'QC' },
       { key: 'lecturer-question-bank', label: APP_PAGE_LABELS['lecturer-question-bank'], icon: 'LQ' },
       { key: 'archived-products', label: APP_PAGE_LABELS['archived-products'], icon: 'LT' },
+      { key: 'product-library', label: APP_PAGE_LABELS['product-library'], icon: 'LB' },
       { key: 'users', label: APP_PAGE_LABELS.users, icon: 'US' },
       { key: 'audit', label: APP_PAGE_LABELS.audit, icon: 'LG' },
     ],
@@ -167,9 +169,10 @@ const APP_ALLOWED_PAGES: Record<RoleKey, PageKey[]> = {
     'gsmf01',
     'gsmf02',
     'archived-products',
+    'product-library',
   ],
-  specialist: ['profile', 'guide', 'notifications', 'my-tasks', 'smf02', 'smf03', 'smf05', 'smf06', 'smf08', 'vsmf02', 'vsmf03', 'vsmf05', 'vsmf06', 'gsmf02', 'gsmf04'],
-  qc: ['profile', 'guide', 'notifications', 'my-tasks', 'smf04', 'smf07', 'vsmf04', 'vsmf07', 'gsmf03', 'qc-criteria', 'lecturer-question-bank', 'tracking'],
+  specialist: ['profile', 'guide', 'notifications', 'my-tasks', 'smf02', 'smf03', 'smf05', 'smf06', 'smf08', 'vsmf02', 'vsmf03', 'vsmf05', 'vsmf06', 'gsmf02', 'gsmf04', 'product-library'],
+  qc: ['profile', 'guide', 'notifications', 'my-tasks', 'smf04', 'smf07', 'vsmf04', 'vsmf07', 'gsmf03', 'qc-criteria', 'lecturer-question-bank', 'tracking', 'product-library'],
   client: ['profile', 'guide', 'client-orders', 'client-order-detail', 'client-products', 'client-delivery', 'client-payment', 'notifications'],
   client_director: ['profile', 'guide', 'client-orders', 'client-order-detail', 'client-products', 'client-delivery', 'client-payment', 'client-approvals', 'notifications'],
 };

@@ -50,7 +50,8 @@ export type PageKey =
   | 'lecturer-question-bank'
   | 'users'
   | 'audit'
-  | 'archived-products';
+  | 'archived-products'
+  | 'product-library';
 
 export type NavItem = {
   key: PageKey;
@@ -117,6 +118,7 @@ export const PAGE_LABELS = {
   users: 'Người dùng',
   audit: 'Nhật ký kiểm tra',
   'archived-products': 'Sản phẩm lưu trữ',
+  'product-library': 'Thư viện sản phẩm',
 } as Record<PageKey, string>;
 
 export const NAV_SECTIONS: NavSection[] = [
@@ -203,6 +205,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'qc-criteria', label: 'Tiêu chí QC', icon: '📏' },
       { key: 'archived-products', label: 'Sản phẩm lưu trữ', icon: '🗃' },
+      { key: 'product-library', label: 'Thư viện sản phẩm', icon: '📚' },
       { key: 'users', label: 'Người dùng', icon: '👥' },
       { key: 'audit', label: 'Nhật ký kiểm tra', icon: '📚' },
     ],
@@ -216,9 +219,9 @@ export const NAV_SECTIONS: NavSection[] = [
 
 export const ALLOWED_PAGES: Record<RoleKey, PageKey[]> = {
   admin: Object.keys(PAGE_LABELS) as PageKey[],
-  pm: ['profile', 'guide', 'dashboard', 'tracking', 'notifications', 'producer-inbox', 'order-pm-dashboard', 'producer-launch', 'producer-deliver', 'producer-invoice', 'production-workflow', 'schedule-setup', 'my-tasks', 'smf01', 'smf02', 'vsmf01', 'vsmf02', 'gsmf01', 'gsmf02', 'archived-products'],
-  specialist: ['profile', 'guide', 'notifications', 'my-tasks', 'smf02', 'smf03', 'smf05', 'smf06', 'smf08', 'vsmf02', 'vsmf03', 'vsmf05', 'vsmf06', 'gsmf02', 'gsmf04'],
-  qc: ['profile', 'guide', 'notifications', 'my-tasks', 'smf04', 'smf07', 'vsmf04', 'vsmf07', 'gsmf03', 'qc-criteria', 'tracking'],
+  pm: ['profile', 'guide', 'dashboard', 'tracking', 'notifications', 'producer-inbox', 'order-pm-dashboard', 'producer-launch', 'producer-deliver', 'producer-invoice', 'production-workflow', 'schedule-setup', 'my-tasks', 'smf01', 'smf02', 'vsmf01', 'vsmf02', 'gsmf01', 'gsmf02', 'archived-products', 'product-library'],
+  specialist: ['profile', 'guide', 'notifications', 'my-tasks', 'smf02', 'smf03', 'smf05', 'smf06', 'smf08', 'vsmf02', 'vsmf03', 'vsmf05', 'vsmf06', 'gsmf02', 'gsmf04', 'product-library'],
+  qc: ['profile', 'guide', 'notifications', 'my-tasks', 'smf04', 'smf07', 'vsmf04', 'vsmf07', 'gsmf03', 'qc-criteria', 'tracking', 'product-library'],
   client: ['profile', 'guide', 'client-orders', 'client-order-detail', 'client-new-order', 'client-products', 'client-delivery', 'client-payment', 'notifications'],
   client_director: ['profile', 'guide', 'client-orders', 'client-order-detail', 'client-new-order', 'client-products', 'client-delivery', 'client-payment', 'client-approvals', 'notifications'],
 };

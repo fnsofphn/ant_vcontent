@@ -52,6 +52,7 @@ const QualityGatePage = lazy(() => import('@/pages/ProductionStagePages').then((
 const ScormStagePage = lazy(() => import('@/pages/ProductionStagePages').then((module) => ({ default: module.ScormStagePage })));
 const StoryboardStagePage = lazy(() => import('@/pages/StoryboardStagePages').then((module) => ({ default: module.StoryboardStagePage })));
 const UsersAdminPage = lazy(() => import('@/pages/UsersAdminPage').then((module) => ({ default: module.UsersAdminPage })));
+const ProductLibraryPage = lazy(() => import('@/pages/LibraryPages').then((module) => ({ default: module.ProductLibraryPage })));
 
 function withPageLoader(node: ReactNode) {
   return <Suspense fallback={<div className="app-loading">Đang tải màn hình...</div>}>{node}</Suspense>;
@@ -1251,6 +1252,9 @@ export function WorkspacePage() {
   }
   if (pageId === 'archived-products') {
     return <OrdersTablePage eye="Archive" title="Sản phẩm lưu trữ" subtitle="Danh sách sản phẩm đã archive sau khi hoàn tất bàn giao và khóa workflow." />;
+  }
+  if (pageId === 'product-library') {
+    return withPageLoader(<ProductLibraryPage />);
   }
   if (false) return null;
   if (isWorkflowStage(pageId)) return <StagePage pageId={pageId} />;
