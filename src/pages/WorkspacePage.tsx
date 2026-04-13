@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, type ReactNode } from 'react';
+import React, { Suspense, lazy, useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
@@ -224,6 +224,40 @@ function DashboardPage() {
   );
 }
 
+function mapDetailedStatus(status: string, deadline?: string | null): string {
+  if (['done', 'approved', 'ready_delivery', 'paid', 'success', 'accepted', 'confirmed'].includes(status)) return 'Hoàn thành';
+  if (['todo', 'assigned', 'pending_launch'].includes(status)) return 'Chưa bắt đầu';
+  if (['submitted', 'review', 'in_review', 'pending_acceptance', 'pm_review'].includes(status)) return 'Pending';
+  
+  if (deadline && new Date(deadline).getTime() < Date.now()) return 'Quá hạn';
+  if (['overdue', 'qc_fail', 'fail', 'changes_requested', 'critical', 'rejected'].includes(status)) return 'Quá hạn';
+
+  return 'Đang thực hiện';
+}
+
+function mapProductDetailStatus(product: any): string {
+  if (product.finished || product.ready_for_delivery) return 'Hoàn thành';
+  if (product.progress >= 100) return 'Hoàn thành';
+  if (product.progress === 0) return 'Chưa thực hiện';
+  if (product.progress > 0) return 'Đang thực hiện';
+  return 'Pending';
+}
+
+function formatDateToMMDDYY(dateString?: string | null) {
+  if (!dateString) return '';
+  const parts = dateString.split('-');
+  if (parts.length === 3) {
+    const [yyyy, mm, dd] = parts;
+    return `${mm}/${dd}/${yyyy.slice(-2)}`;
+  }
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const yy = String(date.getFullYear()).slice(-2);
+  return `${mm}/${dd}/${yy}`;
+}
+
 function OrdersTablePage(props: { eye: string; title: string; subtitle: string; actionLabel?: string }) {
   const { profile } = useAuth();
   const queryClient = useQueryClient();
@@ -231,6 +265,8 @@ function OrdersTablePage(props: { eye: string; title: string; subtitle: string; 
     queryKey: ['orders'],
     queryFn: listOrdersWithProducts,
   });
+
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   const createOrderMutation = useMutation({
     mutationFn: async () => {
@@ -241,11 +277,7 @@ function OrdersTablePage(props: { eye: string; title: string; subtitle: string; 
         client: profile.fullName,
         companyId: profile.companyId,
         createdByProfileId: profile.id,
-        bundleCounts: {
-          eln: 1,
-          video: 0,
-          game: 0,
-        },
+        bundleCounts: { eln: 1, video: 0, game: 0 },
       });
     },
     onSuccess: async () => {
@@ -260,22 +292,40 @@ function OrdersTablePage(props: { eye: string; title: string; subtitle: string; 
     },
   });
 
-  const realOrders: RealOrderView[] =
-    ordersQuery.data?.orders.map((order) => ({
-      id: order.id,
-      client: order.client,
-      companyId: order.company_id,
-      title: order.title,
-      module: order.module,
-      deadline: order.deadline,
-      status: order.status,
-      productCount: ordersQuery.data?.products.filter((product) => product.order_id === order.id).length || 0,
-    })) || [];
+  const realOrders =
+    ordersQuery.data?.orders.map((order) => {
+      const orderProducts = ordersQuery.data?.products.filter((p) => p.order_id === order.id) || [];
+      const parts = String(order.id || '').split('_');
+      const typeCode = parts.length >= 3 ? parts[parts.length - 1] : (order.module || '');
+      const projectCode = parts.length >= 2 ? parts[1] : (order.id || '');
+      
+      return {
+        id: order.id,
+        client: order.client,
+        companyId: order.company_id,
+        title: order.title,
+        module: order.module,
+        typeCode,
+        projectCode,
+        deadline: order.deadline,
+        status: order.status,
+        products: orderProducts,
+        productCount: orderProducts.length,
+      };
+    }) || [];
 
   const isClientRole = profile?.role === 'client' || profile?.role === 'client_director';
   const scopedOrders = isClientRole && profile?.companyId
     ? realOrders.filter((order) => order.companyId === profile.companyId)
     : realOrders;
+
+  const totalOrders = scopedOrders.length;
+  const totalProducts = scopedOrders.reduce((sum, o) => sum + o.productCount, 0);
+  const totalProjects = new Set(scopedOrders.map(o => o.projectCode)).size;
+
+  const toggleExpand = (orderId: string) => {
+    setExpandedOrderId(prev => prev === orderId ? null : orderId);
+  };
 
   return (
     <>
@@ -291,41 +341,105 @@ function OrdersTablePage(props: { eye: string; title: string; subtitle: string; 
           ) : null
         }
       />
-      <Card title="Danh sách đơn hàng">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Đơn hàng</th>
-              <th>Module</th>
-              <th>Status</th>
-              <th>Deadline</th>
-              <th>Sản phẩm</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(scopedOrders.length ? scopedOrders : ORDERS.map((order) => ({ ...order, productCount: order.products, companyId: null }))).map((order) => (
-              <tr key={order.id}>
-                <td><div className="fw6">{order.id}</div><div className="muted-text">{order.title}</div></td>
-                <td>{order.module}</td>
-                <td><Badge tone={toneForStatus(order.status)}>{profile?.role === 'client' || profile?.role === 'client_director' ? getClientOrderStatusLabel(order) : order.status}</Badge></td>
-                <td>{order.deadline}</td>
-                <td>{order.productCount}</td>
-                <td>
-                  <div className="action-row">
-                    <Link className="btn btn-ghost btn-small" to={`/client-order-detail?orderId=${encodeURIComponent(order.id)}`}>Chi tiết</Link>
-                    <Link className="btn btn-ghost btn-small" to={`/client-products?orderId=${encodeURIComponent(order.id)}`}>Input</Link>
-                    {profile?.companyId && order.companyId === profile.companyId ? (
-                      <button className="btn btn-ghost btn-small" onClick={() => deleteOrderMutation.mutate(order.id)}>
-                        Xóa
-                      </button>
-                    ) : null}
-                  </div>
-                </td>
+      <div className="kpi-row small" style={{ marginBottom: 24 }}>
+        <Kpi label="Tổng số đơn hàng" value={String(totalOrders)} tone="violet" />
+        <Kpi label="Tổng số sản phẩm" value={String(totalProducts)} tone="warning" />
+        <Kpi label="Tổng số dự án" value={String(totalProjects)} tone="success" />
+      </div>
+      <Card title="Danh sách đơn hàng chi tiết">
+        <div style={{ overflowX: 'auto' }}>
+          <table className="data-table tree-table">
+            <thead>
+              <tr>
+                <th style={{ width: 44, padding: '12px 8px', textAlign: 'center' }}>CP</th>
+                <th>Mã đơn hàng</th>
+                <th>Tên đơn hàng</th>
+                <th>Loại</th>
+                <th>Khách hàng</th>
+                <th>Số SP</th>
+                <th>Hạn hoàn thành</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {(scopedOrders.length ? scopedOrders : []).map((order) => {
+                const matchedStatus = mapDetailedStatus(order.status, order.deadline);
+                const isExpanded = expandedOrderId === order.id;
+                
+                return (
+                  <React.Fragment key={order.id}>
+                    <tr className={isExpanded ? 'row-expanded row-parent' : ''} style={{ background: isExpanded ? 'var(--app-bg)' : '' }}>
+                      <td style={{ textAlign: 'center', padding: '12px 8px' }}>
+                        <button className="btn btn-ghost btn-small" onClick={() => toggleExpand(order.id)} style={{ padding: '4px 8px' }}>
+                          {isExpanded ? '▼' : '▶'}
+                        </button>
+                      </td>
+                      <td><div className="fw6">{order.id}</div></td>
+                      <td>{order.title}</td>
+                      <td>{order.typeCode}</td>
+                      <td>{order.client}</td>
+                      <td>{order.productCount}</td>
+                      <td>{formatDateToMMDDYY(order.deadline)}</td>
+                      <td><Badge tone={toneForStatus(order.status)}>{matchedStatus}</Badge></td>
+                      <td>
+                        <div className="action-row">
+                          <Link className="btn btn-ghost btn-small" to={`/client-order-detail?orderId=${encodeURIComponent(order.id)}`}>View chi tiết</Link>
+                          {profile?.companyId && order.companyId === profile.companyId ? (
+                            <button className="btn btn-ghost btn-small" onClick={() => deleteOrderMutation.mutate(order.id)}>Xóa</button>
+                          ) : null}
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    {isExpanded && (
+                      <tr className="row-child-container" style={{ background: 'var(--surface-color)' }}>
+                        <td colSpan={9} style={{ padding: '16px 24px 24px 64px' }}>
+                          <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 12 }}>Checking point</div>
+                          <table className="data-table" style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius)' }}>
+                            <thead>
+                              <tr>
+                                <th>Mã checking point</th>
+                                <th>Mã đơn hàng</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Deadline</th>
+                                <th>Trạng thái</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {order.products.map((product, idx) => {
+                                const cpCode = `${order.id}_CP${String(idx + 1).padStart(2, '0')}`;
+                                return (
+                                  <tr key={product.id}>
+                                    <td><div className="fw6">{cpCode}</div></td>
+                                    <td>{order.id}</td>
+                                    <td>{product.name}</td>
+                                    <td>{formatDateToMMDDYY(order.deadline)}</td>
+                                    <td>{mapProductDetailStatus(product)}</td>
+                                  </tr>
+                                );
+                              })}
+                              {order.products.length === 0 && (
+                                <tr>
+                                  <td colSpan={5} style={{ textAlign: 'center', padding: '16px' }} className="muted-text">Chưa có checking point (sản phẩm) nào.</td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              {scopedOrders.length === 0 && (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: 32 }} className="muted-text">Chưa có dữ liệu quản lý đơn hàng.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </>
   );
