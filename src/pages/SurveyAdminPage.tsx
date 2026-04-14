@@ -148,9 +148,20 @@ export function SurveyAdminPage() {
         title="Quản lý Khảo sát" 
         subtitle="Theo dõi kết quả gửi về, tải báo cáo xuất Excel hoặc điều chỉnh câu hỏi/nhóm đối tượng."
         actions={
-          <button className="btn btn-primary" onClick={exportToExcel}>
-            Xuất kết quả (Excel)
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-ghost" onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/survey`);
+              alert('Đã copy link form public vào khay nhớ tạm!');
+            }}>
+              Copy Link Public
+            </button>
+            <a href="/survey" target="_blank" rel="noreferrer" className="btn btn-ghost" style={{ textDecoration: 'none' }}>
+              Mở link khảo sát ↗
+            </a>
+            <button className="btn btn-primary" onClick={exportToExcel}>
+              Xuất kết quả (Excel)
+            </button>
+          </div>
         }
       />
       
