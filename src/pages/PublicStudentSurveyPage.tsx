@@ -120,25 +120,7 @@ export function PublicStudentSurveyPage() {
 
   const hasD = (jId: string, sId: string) => Object.keys(notes).some(k => k.startsWith(`${sId}_${jId}_`) && (notes[k] && notes[k].trim()));
 
-  const fc = Object.values(notes).filter(v => v && v.trim()).length
-    + Object.values(dr).reduce((s, a) => s + a.filter(v => v && v.trim()).length, 0)
-    + Object.keys(ns).filter(k => ns[k] > 0).length
-    + Object.values(snd).filter(v => v && v.trim()).length
-    + Object.values(ed).filter(v => v && v.trim()).length
-    + Object.values(mf).filter(v => v && v.trim()).length;
-
   const getPayload = () => ({ unit, ts, iw, notes, dr, ns, nn, snd, ed, mf, at: new Date().toISOString() });
-
-  const exp = () => {
-    const d = getPayload();
-    const b = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
-    const u = URL.createObjectURL(b);
-    const a = document.createElement("a");
-    a.href = u;
-    a.download = `${config.survey_code || surveyCodeId}_${unit.ten || "data"}_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(u);
-  };
 
   const saveToSystem = async () => {
     if (!unit.ten || !unit.nguoi) {
@@ -157,12 +139,7 @@ export function PublicStudentSurveyPage() {
     }
   };
 
-  const reset = () => {
-    if (window.confirm("Xóa toàn bộ dữ liệu đã nhập trên thiết bị này?")) {
-      localStorage.removeItem(SK);
-      window.location.reload();
-    }
-  };
+
 
   const themeB = config.themeBaseColor || B;
   const themeO = config.themeAccentColor || O;
@@ -196,21 +173,6 @@ export function PublicStudentSurveyPage() {
           >
             {lb}
           </button>
-        ))}
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, padding: "7px 12px" }}>
-          <span style={{ background: themeO, color: "#fff", fontSize: 10, padding: "2px 7px", borderRadius: 3, fontWeight: 700 }}>
-            {fc} mục
-          </span>
-          <button onClick={saveToSystem} disabled={submitting} style={{ background: "#10b981", color: "#fff", border: "none", padding: "5px 10px", borderRadius: 3, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", opacity: submitting ? 0.7 : 1 }}>
-            {submitting ? "Đang gửi..." : "Gửi lên hệ thống"}
-          </button>
-          <button onClick={exp} style={{ background: themeB, color: "#fff", border: "none", padding: "5px 10px", borderRadius: 3, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-            Xuất file backup (JSON)
-          </button>
-          <button onClick={reset} style={{ background: "#dc2626", color: "#fff", border: "none", padding: "5px 8px", borderRadius: 3, fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-            Xóa
-          </button>
-        </div>
       </div>
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "14px 12px" }}>
