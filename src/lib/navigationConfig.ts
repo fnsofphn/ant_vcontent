@@ -14,6 +14,7 @@ export const APP_PAGE_LABELS: Record<PageKey, string> = {
   guide: 'Cẩm nang hướng dẫn sử dụng',
   dashboard: 'Quản lý đơn hàng',
   tracking: 'Kế hoạch sản xuất',
+  'survey-admin': 'Quản lý Khảo sát',
   notifications: 'Thông báo',
   'client-orders': 'Danh sách đơn hàng',
   'client-new-order': 'Khởi tạo đơn hàng',
@@ -63,6 +64,7 @@ export const APP_NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'dashboard', label: APP_PAGE_LABELS.dashboard, icon: 'DB' },
       { key: 'tracking', label: APP_PAGE_LABELS.tracking, icon: 'TD' },
+      { key: 'survey-admin', label: APP_PAGE_LABELS['survey-admin'], icon: 'KS' },
       { key: 'product-library', label: APP_PAGE_LABELS['product-library'], icon: 'LB' },
     ],
   },
@@ -149,6 +151,7 @@ const APP_ALLOWED_PAGES: Record<RoleKey, PageKey[]> = {
     'guide',
     'dashboard',
     'tracking',
+    'survey-admin',
     'notifications',
     'client-orders',
     'client-order-detail',
