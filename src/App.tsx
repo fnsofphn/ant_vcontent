@@ -11,6 +11,7 @@ import { recordTelemetry } from '@/lib/telemetry';
 const LoginPage = lazy(() => import('@/pages/LoginPage').then((module) => ({ default: module.LoginPage })));
 const PublicGamePage = lazy(() => import('@/pages/PublicGamePage').then((module) => ({ default: module.PublicGamePage })));
 const PublicLecturerAssessmentPage = lazy(() => import('@/pages/PublicLecturerAssessmentPage').then((module) => ({ default: module.PublicLecturerAssessmentPage })));
+const PublicStudentSurveyPage = lazy(() => import('@/pages/PublicStudentSurveyPage').then((module) => ({ default: module.PublicStudentSurveyPage })));
 const WorkspacePage = lazy(() => import('@/pages/WorkspacePage').then((module) => ({ default: module.WorkspacePage })));
 
 const QUERY_CACHE_STORAGE_KEY = 'vcontent.query-cache';
@@ -116,6 +117,8 @@ export default function App() {
                 <Routes>
                   <Route path="/play/evnspc" element={<PublicGamePage />} />
                   <Route path="/apply/lecturer/:formId" element={<PublicLecturerAssessmentPage />} />
+                  <Route path="/survey" element={<PublicStudentSurveyPage />} />
+                  <Route path="/survey/:configCode" element={<PublicStudentSurveyPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route element={<ProtectedRoute />}>
                     <Route element={<AppLayout />}>

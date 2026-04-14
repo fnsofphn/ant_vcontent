@@ -53,6 +53,7 @@ const ScormStagePage = lazy(() => import('@/pages/ProductionStagePages').then((m
 const StoryboardStagePage = lazy(() => import('@/pages/StoryboardStagePages').then((module) => ({ default: module.StoryboardStagePage })));
 const UsersAdminPage = lazy(() => import('@/pages/UsersAdminPage').then((module) => ({ default: module.UsersAdminPage })));
 const ProductLibraryPage = lazy(() => import('@/pages/LibraryPages').then((module) => ({ default: module.ProductLibraryPage })));
+const SurveyAdminPage = lazy(() => import('@/pages/SurveyAdminPage').then((module) => ({ default: module.SurveyAdminPage })));
 
 function withPageLoader(node: ReactNode) {
   return <Suspense fallback={<div className="app-loading">Đang tải màn hình...</div>}>{node}</Suspense>;
@@ -1255,6 +1256,9 @@ export function WorkspacePage() {
   }
   if (pageId === 'product-library') {
     return withPageLoader(<ProductLibraryPage />);
+  }
+  if (pageId === 'survey-admin') {
+    return withPageLoader(<SurveyAdminPage />);
   }
   if (false) return null;
   if (isWorkflowStage(pageId)) return <StagePage pageId={pageId} />;

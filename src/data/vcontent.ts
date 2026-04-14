@@ -12,6 +12,7 @@ export type PageKey =
   | 'dashboard'
   | 'tracking'
   | 'notifications'
+  | 'survey-admin'
   | 'client-orders'
   | 'client-new-order'
   | 'client-order-detail'
@@ -80,6 +81,7 @@ export const PAGE_LABELS = {
   dashboard: 'Quản lý đơn hàng',
   tracking: 'Kế hoạch sản xuất',
   notifications: 'Thông báo',
+  'survey-admin': 'Quản lý Khảo sát',
   'client-orders': 'Đơn hàng của tôi',
   'client-new-order': 'Tạo đơn hàng mới',
   'client-order-detail': 'Chi tiết đơn hàng',
@@ -127,6 +129,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'dashboard', label: 'Quản lý đơn hàng', icon: '⬛' },
       { key: 'tracking', label: 'Kế hoạch sản xuất', icon: '📊' },
+      { key: 'survey-admin', label: 'Quản lý Khảo sát', icon: '📋' },
       { key: 'product-library', label: 'Thư viện lưu trữ', icon: '📚' },
     ],
   },
@@ -218,7 +221,7 @@ export const NAV_SECTIONS: NavSection[] = [
 
 export const ALLOWED_PAGES: Record<RoleKey, PageKey[]> = {
   admin: Object.keys(PAGE_LABELS) as PageKey[],
-  pm: ['profile', 'guide', 'dashboard', 'tracking', 'notifications', 'producer-inbox', 'order-pm-dashboard', 'producer-launch', 'producer-deliver', 'producer-invoice', 'production-workflow', 'schedule-setup', 'my-tasks', 'smf01', 'smf02', 'vsmf01', 'vsmf02', 'gsmf01', 'gsmf02', 'archived-products', 'product-library'],
+  pm: ['profile', 'guide', 'dashboard', 'tracking', 'survey-admin', 'notifications', 'producer-inbox', 'order-pm-dashboard', 'producer-launch', 'producer-deliver', 'producer-invoice', 'production-workflow', 'schedule-setup', 'my-tasks', 'smf01', 'smf02', 'vsmf01', 'vsmf02', 'gsmf01', 'gsmf02', 'archived-products', 'product-library'],
   specialist: ['profile', 'guide', 'notifications', 'my-tasks', 'smf02', 'smf03', 'smf05', 'smf06', 'smf08', 'vsmf02', 'vsmf03', 'vsmf05', 'vsmf06', 'gsmf02', 'gsmf04', 'product-library'],
   qc: ['profile', 'guide', 'notifications', 'my-tasks', 'smf04', 'smf07', 'vsmf04', 'vsmf07', 'gsmf03', 'qc-criteria', 'tracking', 'product-library'],
   client: ['profile', 'guide', 'client-orders', 'client-order-detail', 'client-new-order', 'client-products', 'client-delivery', 'client-payment', 'notifications'],
