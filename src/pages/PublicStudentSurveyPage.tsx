@@ -173,6 +173,7 @@ export function PublicStudentSurveyPage() {
           >
             {lb}
           </button>
+        ))}
       </div>
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "14px 12px" }}>
