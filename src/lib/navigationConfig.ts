@@ -12,8 +12,8 @@ export const APP_ROLE_META: Record<RoleKey, { label: string; title: string }> = 
 export const APP_PAGE_LABELS: Record<PageKey, string> = {
   profile: 'Hồ sơ cá nhân',
   guide: 'Cẩm nang hướng dẫn sử dụng',
-  dashboard: 'Tổng quan điều hành',
-  tracking: 'Theo dõi sản xuất',
+  dashboard: 'Quản lý đơn hàng',
+  tracking: 'Kế hoạch sản xuất',
   notifications: 'Thông báo',
   'client-orders': 'Danh sách đơn hàng',
   'client-new-order': 'Khởi tạo đơn hàng',
@@ -54,7 +54,7 @@ export const APP_PAGE_LABELS: Record<PageKey, string> = {
   users: 'Người dùng',
   audit: 'Nhật ký kiểm tra',
   'archived-products': 'Sản phẩm lưu trữ',
-  'product-library': 'Thư viện sản phẩm',
+  'product-library': 'Thư viện lưu trữ',
 };
 
 export const APP_NAV_SECTIONS: NavSection[] = [
@@ -63,7 +63,7 @@ export const APP_NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'dashboard', label: APP_PAGE_LABELS.dashboard, icon: 'DB' },
       { key: 'tracking', label: APP_PAGE_LABELS.tracking, icon: 'TD' },
-      { key: 'notifications', label: APP_PAGE_LABELS.notifications, icon: 'TB' },
+      { key: 'product-library', label: APP_PAGE_LABELS['product-library'], icon: 'LB' },
     ],
   },
   {
@@ -131,7 +131,6 @@ export const APP_NAV_SECTIONS: NavSection[] = [
       { key: 'qc-criteria', label: APP_PAGE_LABELS['qc-criteria'], icon: 'QC' },
       { key: 'lecturer-question-bank', label: APP_PAGE_LABELS['lecturer-question-bank'], icon: 'LQ' },
       { key: 'archived-products', label: APP_PAGE_LABELS['archived-products'], icon: 'LT' },
-      { key: 'product-library', label: APP_PAGE_LABELS['product-library'], icon: 'LB' },
       { key: 'users', label: APP_PAGE_LABELS.users, icon: 'US' },
       { key: 'audit', label: APP_PAGE_LABELS.audit, icon: 'LG' },
     ],

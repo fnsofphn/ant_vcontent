@@ -77,8 +77,8 @@ export const ROLE_META: Record<RoleKey, { label: string; title: string }> = {
 export const PAGE_LABELS = {
   profile: 'Ho so ca nhan',
   guide: 'Cẩm nang HDSD phần mềm',
-  dashboard: 'Tổng quan điều hành',
-  tracking: 'Theo dõi sản xuất',
+  dashboard: 'Quản lý đơn hàng',
+  tracking: 'Kế hoạch sản xuất',
   notifications: 'Thông báo',
   'client-orders': 'Đơn hàng của tôi',
   'client-new-order': 'Tạo đơn hàng mới',
@@ -118,16 +118,16 @@ export const PAGE_LABELS = {
   users: 'Người dùng',
   audit: 'Nhật ký kiểm tra',
   'archived-products': 'Sản phẩm lưu trữ',
-  'product-library': 'Thư viện sản phẩm',
+  'product-library': 'Thư viện lưu trữ',
 } as Record<PageKey, string>;
 
 export const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Tổng quan',
     items: [
-      { key: 'dashboard', label: 'Tổng quan điều hành', icon: '⬛' },
-      { key: 'tracking', label: 'Theo dõi sản xuất', icon: '📊' },
-      { key: 'notifications', label: 'Thông báo', icon: '🔔' },
+      { key: 'dashboard', label: 'Quản lý đơn hàng', icon: '⬛' },
+      { key: 'tracking', label: 'Kế hoạch sản xuất', icon: '📊' },
+      { key: 'product-library', label: 'Thư viện lưu trữ', icon: '📚' },
     ],
   },
   {
@@ -205,7 +205,6 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'qc-criteria', label: 'Tiêu chí QC', icon: '📏' },
       { key: 'archived-products', label: 'Sản phẩm lưu trữ', icon: '🗃' },
-      { key: 'product-library', label: 'Thư viện sản phẩm', icon: '📚' },
       { key: 'users', label: 'Người dùng', icon: '👥' },
       { key: 'audit', label: 'Nhật ký kiểm tra', icon: '📚' },
     ],
